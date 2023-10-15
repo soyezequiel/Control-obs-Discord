@@ -72,6 +72,18 @@ client.once('ready', async () => {
       name: 'hidediscord',
       description: 'Oculta la ventana de Discord en OBS'
     }
+    ,{
+      name: 'setvoicevolume',
+      description: 'Ajusta el volumen del canal de voz',
+      options: [
+        {
+          name: 'volume',
+          type: 10,
+          description: 'Volumen (0-100%)',
+          required: true
+        }
+      ]
+    }
   ];
 
   // Crea una nueva instancia REST para hacer peticiones a la API de Discord
@@ -187,6 +199,20 @@ if (interaction.commandName === 'hidediscord') {
   }
 }
 
+ // Comando para ajustar el volumen del canal de voz
+ if (commandName === 'setvoicevolume') {
+  const volumePercentage = interaction.options.getNumber('volume') / 100;  // Convierte el porcentaje a un valor entre 0 y 1
+  try {
+    await obs.send('SetVolume', {
+      source: 'voz',  // Asegúrate de que 'voz' sea el nombre exacto del canal de audio en OBS
+      volume: volumePercentage
+    });
+    await interaction.reply(`Volumen del canal de voz ajustado a: ${interaction.options.getNumber('volume')}%`);
+  } catch (error) {
+    console.error(error);
+    await interaction.reply('Error al ajustar el volumen del canal de voz.');
+  }
+}
 });
 
 
