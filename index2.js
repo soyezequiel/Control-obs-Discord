@@ -51,4 +51,4 @@ player.on(AudioPlayerStatus.Idle, () => {
     console.log("The audio player has stopped.");
 });
 
-client.login('MTE2MjAwODkwNDcwNDc0MTM3Ng.GIzbew.qcNpcaDNeCDMRaBJ51O3IQlc4Uc0-dHYAogSlw');
+client.login('');
