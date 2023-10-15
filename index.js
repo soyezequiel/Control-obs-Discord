@@ -1,94 +1,91 @@
+// Importa las librerías necesarias
 require('dotenv').config();
 const { Client, GatewayIntentBits } = require('discord.js');
 const OBSWebSocket = require('obs-websocket-js');
 
-//const client = new Client({ intents: [GatewayIntentBits.Guilds], partials: ['CHANNEL'] });
-//const client = new Client({ intents: [GatewayIntentBits.Guilds, GatewayIntentBits.MessageContent], partials: ['CHANNEL'] });
+// Configura las intenciones y parciales del cliente de Discord
 const client = new Client({
     intents: [
         GatewayIntentBits.Guilds,
         GatewayIntentBits.GuildMessages,
-        GatewayIntentBits.MessageContent,  // Add this line
+        GatewayIntentBits.MessageContent,
         GatewayIntentBits.GuildVoiceStates
     ]
 });
 
+// Crea una nueva instancia de OBSWebSocket
 const obs = new OBSWebSocket();
 
-// Tu token de bot de Discord
+// Almacena el token del bot de Discord desde un archivo .env
 const token = process.env.DISCORD_TOKEN;
-
-
-// Conectar a OBS WebSocket
 
 // Función para intentar conectar a OBS WebSocket
 async function connectToObs() {
     try {
+        // Intenta conectar al servidor OBS WebSocket
         await obs.connect({ address: 'localhost:4444' });
         console.log('Conectado a OBS');
     } catch (err) {
+        // En caso de error, muestra el error y reintenta en 5 segundos
         console.error('No se pudo conectar a OBS:', err);
-        // Esperar 5 segundos antes de intentar nuevamente
         setTimeout(connectToObs, 5000);
     }
 }
 
-// Intentar conectar a OBS WebSocket
+// Intenta conectar a OBS WebSocket cuando inicia el script
 connectToObs();
 
+// Evento que se dispara una vez que el bot está listo
 client.once('ready', () => {
   console.log(`Logged in as ${client.user.tag}!`);
 });
 
-
-
-
-
-
+// Evento que se dispara cada vez que se crea un mensaje en un canal del servidor
 client.on('messageCreate', async message => {
-    // No respondas a otros bots o a ti mismo
+    // Ignora mensajes de otros bots o del propio bot
     if(message.author.bot) return;
 
-    // Obtén el miembro que envió el mensaje
+    // Obtiene el miembro que envió el mensaje
     const member = message.member;
 
     // Verifica si el miembro tiene el rol "Streamer"
     if (!member.roles.cache.some(role => role.name === 'Streamer')) {
-      //  message.channel.send('No tienes permiso para usar este comando.');
         return;
     }
 
+    // Separa el mensaje en comandos y argumentos
     const args = message.content.trim().split(/ +/g);
     const command = args.shift().toLowerCase();
 
+    // Log del comando recibido
+    console.log(`Command: ${command}`);
 
-
-
-    console.log(`Command: ${command}`);  // Log de comando
-
+    // Comandos específicos para controlar OBS
     if(command === '!startstream') {
-        console.log('Attempting to start stream');  // Log antes de intentar iniciar la transmisión
+        // Intenta iniciar la transmisión
         try {
             await obs.send('StartStreaming');
             message.channel.send('Transmisión iniciada');
         } catch (error) {
-            console.error('Error while starting stream:', error);  // Log de error
+            console.error('Error al iniciar la transmisión:', error);
             message.channel.send('Error al iniciar la transmisión');
         }
     }
 
     if(command === '!stopstream') {
-        console.log('Attempting to stop stream');  // Log antes de intentar detener la transmisión
+        // Intenta detener la transmisión
         try {
             await obs.send('StopStreaming');
             message.channel.send('Transmisión detenida');
         } catch (error) {
-            console.error('Error while stopping stream:', error);  // Log de error
+            console.error('Error al detener la transmisión:', error);
             message.channel.send('Error al detener la transmisión');
         }
     }
+
     if(command === '!changescene') {
-        const sceneName = args.join(' ');  // Combina los argumentos restantes en una cadena
+        // Cambia la escena en OBS
+        const sceneName = args.join(' ');
         if (!sceneName) {
             message.channel.send('Debes proporcionar el nombre de la escena.');
             return;
@@ -103,5 +100,5 @@ client.on('messageCreate', async message => {
     }
 });
 
-
+// Inicia el bot de Discord
 client.login(token);
