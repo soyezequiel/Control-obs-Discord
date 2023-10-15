@@ -64,14 +64,24 @@ client.once('ready', async () => {
         }
       ]
     }
+    ,{
+      name: 'showdiscord',
+      description: 'Muestra la ventana de Discord en OBS'
+    },
+    {
+      name: 'hidediscord',
+      description: 'Oculta la ventana de Discord en OBS'
+    }
   ];
+
   // Crea una nueva instancia REST para hacer peticiones a la API de Discord
   const rest = new REST({ version: '9' }).setToken(token);
   try {
     console.log('Actualizando comandos de barra inclinada (/)...');
     // Actualiza los comandos de barra inclinada en el servidor de Discord
     await rest.put(
-      Routes.applicationGuildCommands(client.user.id, '470689796239392768'),
+     // Routes.applicationGuildCommands(client.user.id, '470689796239392768'),
+     Routes.applicationCommands(client.user.id),
       { body: commands }
     );
 
@@ -148,6 +158,32 @@ if (interaction.commandName === 'setvolume') {
   } catch (error) {
       console.error('Error setting volume:', error);  // Log any errors
       await interaction.reply('Error al ajustar el volumen.');
+  }
+}
+
+if (interaction.commandName === 'showdiscord') {
+  try {
+      await obs.send('SetSceneItemProperties', {
+          item: 'discord',  // Nombre de la fuente
+          visible: true  // Mostrar la fuente
+      });
+      await interaction.reply('Ventana de Discord mostrada.');
+  } catch (error) {
+      console.error('Error al mostrar la ventana de Discord:', error);
+      await interaction.reply('Error al mostrar la ventana de Discord.');
+  }
+}
+
+if (interaction.commandName === 'hidediscord') {
+  try {
+      await obs.send('SetSceneItemProperties', {
+          item: 'discord',  // Nombre de la fuente
+          visible: false  // Ocultar la fuente
+      });
+      await interaction.reply('Ventana de Discord ocultada.');
+  } catch (error) {
+      console.error('Error al ocultar la ventana de Discord:', error);
+      await interaction.reply('Error al ocultar la ventana de Discord.');
   }
 }
 
