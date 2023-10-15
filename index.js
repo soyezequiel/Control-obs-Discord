@@ -84,6 +84,11 @@ client.once('ready', async () => {
         }
       ]
     }
+    ,{
+      name: 'cambiarmusica',
+      description: 'Obtén el enlace para cambiar la música'
+    }
+    
   ];
 
   // Crea una nueva instancia REST para hacer peticiones a la API de Discord
@@ -213,6 +218,16 @@ if (interaction.commandName === 'hidediscord') {
     await interaction.reply('Error al ajustar el volumen del canal de voz.');
   }
 }
+ // Comando para obtener el enlace para cambiar la música
+ if (commandName === 'cambiarmusica') {
+  try {
+    await interaction.reply('https://w2g.tv/?r=8px5xf4ugi12muzkxe');
+  } catch (error) {
+    console.error(error);
+    await interaction.reply('Error al obtener el enlace para cambiar la música.');
+  }
+}
+
 });
 
 
