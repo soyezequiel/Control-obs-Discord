@@ -1,3 +1,45 @@
+const axios = require('axios');
+
+async function updateStreamTitle(newTitle) {
+  try {
+    const response = await axios.patch(
+      'https://api.twitch.tv/helix/channels?broadcaster_id='+process.env.TWITCH_CHANNEL_ID,
+      { title: newTitle },
+      {
+        headers: {
+          'Client-ID': process.env.TWITCH_CLIENT_ID,
+          'Authorization': process.env.TWITCH_AUTORIZACION,
+          'Content-Type': 'application/json'
+        }
+      }
+    );
+
+    if (response.status === 204) {
+      console.log('Título del stream actualizado exitosamente');
+    } else {
+      console.error('Error al actualizar el título del stream:', response.data);
+    }
+  } catch (error) {
+    console.error('Error al actualizar el título del stream:', error.response ? error.response.data : error.message);
+  }
+}
+
+      
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 // Importa las librerías necesarias
 require('dotenv').config();
 const { Client, GatewayIntentBits, REST, Routes } = require('discord.js');
@@ -87,8 +129,19 @@ client.once('ready', async () => {
     ,{
       name: 'cambiarmusica',
       description: 'Obtén el enlace para cambiar la música'
-    }
-    
+    }   
+    ,{
+      name: 'settitle',
+      description: 'Cambia el título del stream en Twitch',
+      options: [
+        {
+          name: 'title',
+          type: 3,  // STRING
+          description: 'Nuevo título del stream',
+          required: true
+        }
+      ]
+    } 
   ];
 
   // Crea una nueva instancia REST para hacer peticiones a la API de Discord
@@ -227,13 +280,31 @@ if (interaction.commandName === 'hidediscord') {
     await interaction.reply('Error al obtener el enlace para cambiar la música.');
   }
 }
-
+// ... tus otros manejadores de comandos
+if (interaction.commandName === 'settitle') {
+  const newTitle = interaction.options.getString('title');
+  await updateStreamTitle(newTitle);
+  await interaction.reply(`Título del stream cambiado a: ${newTitle}`);
+}
 });
 
 
 
 // Conecta el bot a Discord usando el token
 client.login(token);
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
