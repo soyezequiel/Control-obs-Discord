@@ -1,42 +1,4 @@
-const axios = require('axios');
-
-async function updateStreamTitle(newTitle) {
-  try {
-    const response = await axios.patch(
-      'https://api.twitch.tv/helix/channels?broadcaster_id='+process.env.TWITCH_CHANNEL_ID,
-      { title: newTitle },
-      {
-        headers: {
-          'Client-ID': process.env.TWITCH_CLIENT_ID,
-          'Authorization': process.env.TWITCH_AUTORIZACION,
-          'Content-Type': 'application/json'
-        }
-      }
-    );
-
-    if (response.status === 204) {
-      console.log('Título del stream actualizado exitosamente');
-    } else {
-      console.error('Error al actualizar el título del stream:', response.data);
-    }
-  } catch (error) {
-    console.error('Error al actualizar el título del stream:', error.response ? error.response.data : error.message);
-  }
-}
-
-      
-
-
-
-
-
-
-
-
-
-
-
-
+const updateStreamTitle = require('./funciones');
 
 
 
@@ -44,6 +6,8 @@ async function updateStreamTitle(newTitle) {
 require('dotenv').config();
 const { Client, GatewayIntentBits, REST, Routes } = require('discord.js');
 const OBSWebSocket = require('obs-websocket-js');
+
+
 // Crea una nueva instancia del cliente de Discord
 const client = new Client({
   intents: [
@@ -68,97 +32,11 @@ async function connectToObs() {
 // Llama a la función para conectarse a OBS
 connectToObs();
 
+
 // Evento que se dispara cuando el bot está listo
+const registerCommands = require('./setupCommands.js');
 client.once('ready', async () => {
-  console.log(`Logged in as ${client.user.tag}!`);
-
-  // Registra los Slash Commands con la API de Discord
-  const commands = [
-    {
-      name: 'startstream',
-      description: 'Inicia la transmisión en OBS'
-    },
-    {
-      name: 'stopstream',
-      description: 'Detiene la transmisión en OBS'
-    },
-    {
-      name: 'changescene',
-      description: 'Cambia la escena en OBS',
-      options: [
-        {
-          name: 'scene',
-          type: 3,  // Usamos 3 en lugar de 'STRING'
-          description: 'Nombre de la escena',
-          required: true
-        }
-      ]
-    }
-    ,{
-      name: 'setvolume',
-      description: 'Ajusta el volumen de la fuente "w2g nav"',
-      options: [
-        {
-          name: 'volume',
-          type: 4,  // Tipo INTEGER
-          description: 'Valor del volumen (0 a 100)',
-          required: true
-        }
-      ]
-    }
-    ,{
-      name: 'showdiscord',
-      description: 'Muestra la ventana de Discord en OBS'
-    },
-    {
-      name: 'hidediscord',
-      description: 'Oculta la ventana de Discord en OBS'
-    }
-    ,{
-      name: 'setvoicevolume',
-      description: 'Ajusta el volumen del canal de voz',
-      options: [
-        {
-          name: 'volume',
-          type: 10,
-          description: 'Volumen (0-100%)',
-          required: true
-        }
-      ]
-    }
-    ,{
-      name: 'cambiarmusica',
-      description: 'Obtén el enlace para cambiar la música'
-    }   
-    ,{
-      name: 'settitle',
-      description: 'Cambia el título del stream en Twitch',
-      options: [
-        {
-          name: 'title',
-          type: 3,  // STRING
-          description: 'Nuevo título del stream',
-          required: true
-        }
-      ]
-    } 
-  ];
-
-  // Crea una nueva instancia REST para hacer peticiones a la API de Discord
-  const rest = new REST({ version: '9' }).setToken(token);
-  try {
-    console.log('Actualizando comandos de barra inclinada (/)...');
-    // Actualiza los comandos de barra inclinada en el servidor de Discord
-    await rest.put(
-     // Routes.applicationGuildCommands(client.user.id, '470689796239392768'),
-     Routes.applicationCommands(client.user.id),
-      { body: commands }
-    );
-
-    console.log('Comandos de barra inclinada (/) registrados.');
-  } catch (error) {
-    console.error(error);
-  }
+  await registerCommands(client, token);
 });
 
 
@@ -204,107 +82,97 @@ client.on('interactionCreate', async interaction => {
       await interaction.reply('Error al cambiar la escena, asegúrate de que el nombre de la escena es correcto.');
     }
   }
-// Comando para ajustar el volumen de "w2g nav"
-if (interaction.commandName === 'setvolume') {
-  const volume = interaction.options.getInteger('volume');
-  console.log(`Volume received from Discord: ${volume}`);  // Log the received volume
+  // Comando para ajustar el volumen de "w2g nav"
+  if (interaction.commandName === 'setvolume') {
+    const volume = interaction.options.getInteger('volume');
+    console.log(`Volume received from Discord: ${volume}`);  // Log the received volume
 
-  // Ensure the volume is within the allowed range
-  if (volume < 0 || volume > 100) {
+    // Ensure the volume is within the allowed range
+    if (volume < 0 || volume > 100) {
       await interaction.reply('El volumen debe estar entre 0 y 100.');
       return;
-  }
+    }
 
-  const volumeScaled = volume / 100.0;  // Scale the volume to a 0.0 - 1.0 range
-  console.log(`Volume scaled for OBS: ${volumeScaled}`);  // Log the scaled volume
+    const volumeScaled = volume / 100.0;  // Scale the volume to a 0.0 - 1.0 range
+    console.log(`Volume scaled for OBS: ${volumeScaled}`);  // Log the scaled volume
 
-  try {
+    try {
       await obs.send('SetVolume', {
-          source: 'musica',  // Updated source name
-          volume: volumeScaled,
-          useDecibel: false  // This will use a 0.0 to 1.0 scale for volume
+        source: 'musica',  // Updated source name
+        volume: volumeScaled,
+        useDecibel: false  // This will use a 0.0 to 1.0 scale for volume
       });
       await interaction.reply(`Volumen ajustado a: ${volume}%`);
-  } catch (error) {
+    } catch (error) {
       console.error('Error setting volume:', error);  // Log any errors
       await interaction.reply('Error al ajustar el volumen.');
+    }
   }
-}
 
-if (interaction.commandName === 'showdiscord') {
-  try {
+  if (interaction.commandName === 'showdiscord') {
+    try {
       await obs.send('SetSceneItemProperties', {
-          item: 'discord',  // Nombre de la fuente
-          visible: true  // Mostrar la fuente
+        item: 'discord',  // Nombre de la fuente
+        visible: true  // Mostrar la fuente
       });
       await interaction.reply('Ventana de Discord mostrada.');
-  } catch (error) {
+    } catch (error) {
       console.error('Error al mostrar la ventana de Discord:', error);
       await interaction.reply('Error al mostrar la ventana de Discord.');
+    }
   }
-}
 
-if (interaction.commandName === 'hidediscord') {
-  try {
+  if (interaction.commandName === 'hidediscord') {
+    try {
       await obs.send('SetSceneItemProperties', {
-          item: 'discord',  // Nombre de la fuente
-          visible: false  // Ocultar la fuente
+        item: 'discord',  // Nombre de la fuente
+        visible: false  // Ocultar la fuente
       });
       await interaction.reply('Ventana de Discord ocultada.');
-  } catch (error) {
+    } catch (error) {
       console.error('Error al ocultar la ventana de Discord:', error);
       await interaction.reply('Error al ocultar la ventana de Discord.');
+    }
   }
-}
 
- // Comando para ajustar el volumen del canal de voz
- if (commandName === 'setvoicevolume') {
-  const volumePercentage = interaction.options.getNumber('volume') / 100;  // Convierte el porcentaje a un valor entre 0 y 1
-  try {
-    await obs.send('SetVolume', {
-      source: 'voz',  // Asegúrate de que 'voz' sea el nombre exacto del canal de audio en OBS
-      volume: volumePercentage
-    });
-    await interaction.reply(`Volumen del canal de voz ajustado a: ${interaction.options.getNumber('volume')}%`);
-  } catch (error) {
-    console.error(error);
-    await interaction.reply('Error al ajustar el volumen del canal de voz.');
+  // Comando para ajustar el volumen del canal de voz
+  if (commandName === 'setvoicevolume') {
+    const volumePercentage = interaction.options.getNumber('volume') / 100;  // Convierte el porcentaje a un valor entre 0 y 1
+    try {
+      await obs.send('SetVolume', {
+        source: 'voz',  // Asegúrate de que 'voz' sea el nombre exacto del canal de audio en OBS
+        volume: volumePercentage
+      });
+      await interaction.reply(`Volumen del canal de voz ajustado a: ${interaction.options.getNumber('volume')}%`);
+    } catch (error) {
+      console.error(error);
+      await interaction.reply('Error al ajustar el volumen del canal de voz.');
+    }
   }
-}
- // Comando para obtener el enlace para cambiar la música
- if (commandName === 'cambiarmusica') {
-  try {
-    await interaction.reply('https://w2g.tv/?r=8px5xf4ugi12muzkxe');
-  } catch (error) {
-    console.error(error);
-    await interaction.reply('Error al obtener el enlace para cambiar la música.');
+  // Comando para obtener el enlace para cambiar la música
+  if (commandName === 'cambiarmusica') {
+    try {
+      await interaction.reply('https://w2g.tv/?r=8px5xf4ugi12muzkxe');
+    } catch (error) {
+      console.error(error);
+      await interaction.reply('Error al obtener el enlace para cambiar la música.');
+    }
   }
-}
-// ... tus otros manejadores de comandos
-if (interaction.commandName === 'settitle') {
-  const newTitle = interaction.options.getString('title');
-  await updateStreamTitle(newTitle);
-  await interaction.reply(`Título del stream cambiado a: ${newTitle}`);
-}
+  // ... tus otros manejadores de comandos
+  if (interaction.commandName === 'settitle') {
+    const newTitle = interaction.options.getString('title');
+    await updateStreamTitle(newTitle);
+    await interaction.reply(`Título del stream cambiado a: ${newTitle}`);
+  }
+    // devuelve los links con las plataformas de donde se trasmite
+    if (interaction.commandName === 'verstream') {
+      const link1 = 'https://www.twitch.tv/lacryptatv';
+      const link2 = 'https://zap.stream/p/npub19vqjdaudm3vk4gavgpygkxtn3pc07kxvlmj3jww6h8wvwr242uqq0dekq0';
+      await interaction.reply(`Puedes ver los stream en: \n 🔴 Twitch: ${link1} \n 🔴 Zap.stream: ${link2}`);
+    }
 });
 
 
 
 // Conecta el bot a Discord usando el token
 client.login(token);
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
