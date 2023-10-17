@@ -70,6 +70,54 @@ client.on('interactionCreate', async interaction => {
   if (!interaction.isCommand()) return;
 
   const { commandName } = interaction;
+
+
+  // devuelve los links con las plataformas de donde se trasmite
+  if (interaction.commandName === 'verstream') {
+    const link1 = 'https://www.twitch.tv/lacryptatv';
+    const link2 = 'https://zap.stream/p/npub19vqjdaudm3vk4gavgpygkxtn3pc07kxvlmj3jww6h8wvwr242uqq0dekq0';
+    await interaction.reply(`Puedes ver los stream en: \n 🔴 Twitch: ${link1} \n 🔴 Zap.stream: ${link2}`);
+  }
+  // agrega musica
+  if (interaction.commandName === 'addsong') {
+    const url = interaction.options.getString('url');
+    const title = await getVideoTitle(url);
+    try {
+      //  const response = await fetch("https://api.w2g.tv/rooms/kx9mc4jozawf3ayenbo4fx/playlists/current/playlist_items/sync_update", {
+      const response = await fetch("https://api.w2g.tv/rooms/8px5xf4ugi12muzkxe/playlists/current/playlist_items/sync_update", {
+        method: 'POST',
+        headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          "w2g_api_key": process.env.w2g,
+          "add_items": [{ "url": url, "title": title }]
+        })
+      });
+      await interaction.reply(`Canción agregada: ${title}`);
+    } catch (error) {
+      console.error('Error al agregar la canción:', error);
+      await interaction.reply('Error al agregar la canción.');
+    }
+  }
+
+  // Comando para obtener el enlace para cambiar la música
+  if (commandName === 'cambiarmusica') {
+    try {
+      await interaction.reply('https://w2g.tv/?r=8px5xf4ugi12muzkxe');
+    } catch (error) {
+      console.error(error);
+      await interaction.reply('Error al obtener el enlace para cambiar la música.');
+    }
+  }
+  // Verifica si el usuario tiene el rol necesario
+  const requiredRoleName = 'Streamer';  // Nombre del rol necesario
+  if (!interaction.member.roles.cache.some(role => role.name === requiredRoleName)) {
+    await interaction.reply('No tienes los permisos necesarios para usar este comando.');
+    return;
+  }
+
   // Comando para iniciar la transmisión en OBS
   if (commandName === 'startstream') {
     try {
@@ -168,52 +216,15 @@ client.on('interactionCreate', async interaction => {
       await interaction.reply('Error al ajustar el volumen del canal de voz.');
     }
   }
-  // Comando para obtener el enlace para cambiar la música
-  if (commandName === 'cambiarmusica') {
-    try {
-      await interaction.reply('https://w2g.tv/?r=8px5xf4ugi12muzkxe');
-    } catch (error) {
-      console.error(error);
-      await interaction.reply('Error al obtener el enlace para cambiar la música.');
-    }
-  }
-  // ... tus otros manejadores de comandos
+
+  // Establecer titulo del stream de twitch
   if (interaction.commandName === 'settitle') {
     const newTitle = interaction.options.getString('title');
     await updateStreamTitle(newTitle);
     await interaction.reply(`Título del stream cambiado a: ${newTitle}`);
   }
-  // devuelve los links con las plataformas de donde se trasmite
-  if (interaction.commandName === 'verstream') {
-    const link1 = 'https://www.twitch.tv/lacryptatv';
-    const link2 = 'https://zap.stream/p/npub19vqjdaudm3vk4gavgpygkxtn3pc07kxvlmj3jww6h8wvwr242uqq0dekq0';
-    await interaction.reply(`Puedes ver los stream en: \n 🔴 Twitch: ${link1} \n 🔴 Zap.stream: ${link2}`);
-  }
-  // ... tus otros manejadores de comandos
-  if (interaction.commandName === 'addsong') {
-    const url = interaction.options.getString('url');
-    const title = await getVideoTitle(url);
-    try {
-    //  const response = await fetch("https://api.w2g.tv/rooms/kx9mc4jozawf3ayenbo4fx/playlists/current/playlist_items/sync_update", {
-      const response = await fetch("https://api.w2g.tv/rooms/8px5xf4ugi12muzkxe/playlists/current/playlist_items/sync_update", {
-        method: 'POST',
-        headers: {
-          'Accept': 'application/json',
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-          "w2g_api_key": process.env.w2g,
-          "add_items": [{ "url": url, "title": title }]
-        })
-      });
-      await interaction.reply(`Canción agregada: ${title}`);
-    } catch (error) {
-      console.error('Error al agregar la canción:', error);
-      await interaction.reply('Error al agregar la canción.');
-    }
-  }
-});
 
+});
 
 
 // Conecta el bot a Discord usando el token
