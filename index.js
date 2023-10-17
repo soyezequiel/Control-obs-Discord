@@ -1,3 +1,22 @@
+const axios = require('axios');
+
+async function getVideoTitle(videoUrl) {
+  const videoId = videoUrl.split('v=')[1];
+  const apiKey = process.env.youtube;
+  const url = `https://www.googleapis.com/youtube/v3/videos?id=${videoId}&key=${apiKey}&part=snippet`;
+
+  try {
+    const response = await axios.get(url);
+    const title = response.data.items[0].snippet.title;
+    return title;
+  } catch (error) {
+    console.error('Error fetching video title:', error);
+  }
+}
+
+
+
+
 const updateStreamTitle = require('./funciones');
 
 
@@ -164,12 +183,35 @@ client.on('interactionCreate', async interaction => {
     await updateStreamTitle(newTitle);
     await interaction.reply(`Título del stream cambiado a: ${newTitle}`);
   }
-    // devuelve los links con las plataformas de donde se trasmite
-    if (interaction.commandName === 'verstream') {
-      const link1 = 'https://www.twitch.tv/lacryptatv';
-      const link2 = 'https://zap.stream/p/npub19vqjdaudm3vk4gavgpygkxtn3pc07kxvlmj3jww6h8wvwr242uqq0dekq0';
-      await interaction.reply(`Puedes ver los stream en: \n 🔴 Twitch: ${link1} \n 🔴 Zap.stream: ${link2}`);
+  // devuelve los links con las plataformas de donde se trasmite
+  if (interaction.commandName === 'verstream') {
+    const link1 = 'https://www.twitch.tv/lacryptatv';
+    const link2 = 'https://zap.stream/p/npub19vqjdaudm3vk4gavgpygkxtn3pc07kxvlmj3jww6h8wvwr242uqq0dekq0';
+    await interaction.reply(`Puedes ver los stream en: \n 🔴 Twitch: ${link1} \n 🔴 Zap.stream: ${link2}`);
+  }
+  // ... tus otros manejadores de comandos
+  if (interaction.commandName === 'addsong') {
+    const url = interaction.options.getString('url');
+    const title = await getVideoTitle(url);
+    try {
+    //  const response = await fetch("https://api.w2g.tv/rooms/kx9mc4jozawf3ayenbo4fx/playlists/current/playlist_items/sync_update", {
+      const response = await fetch("https://api.w2g.tv/rooms/8px5xf4ugi12muzkxe/playlists/current/playlist_items/sync_update", {
+        method: 'POST',
+        headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          "w2g_api_key": process.env.w2g,
+          "add_items": [{ "url": url, "title": title }]
+        })
+      });
+      await interaction.reply(`Canción agregada: ${title}`);
+    } catch (error) {
+      console.error('Error al agregar la canción:', error);
+      await interaction.reply('Error al agregar la canción.');
     }
+  }
 });
 
 

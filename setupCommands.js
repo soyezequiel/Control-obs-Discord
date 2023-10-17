@@ -76,6 +76,18 @@ module.exports = async function(client,token){
         name: 'verstream',
         description: 'Devuelve los links para ver los streams',
     }
+    ,{
+        name: 'addsong',
+        description: 'Agrega una canción a la lista de reproducción de Watch2Gether',
+        options: [
+            {
+                name: 'url',
+                type: 3,  // STRING
+                description: 'URL de la canción',
+                required: true
+            }
+        ]
+    }
     ];
 
     // Crea una nueva instancia REST para hacer peticiones a la API de Discord
