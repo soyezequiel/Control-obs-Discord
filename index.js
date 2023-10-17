@@ -59,6 +59,47 @@ client.once('ready', async () => {
 });
 
 
+async function startPuertaSequence() {
+  try {
+    // Refrescar la página del navegador
+    await obs.send('RefreshBrowserSource', {
+      sourceName: 'musica',  // Reemplaza con el nombre de tu fuente de navegador en OBS
+    });
+
+    // Cambiar el título del stream
+    await updateStreamTitle("La puerta de la crypta");
+
+    // Iniciar la transmisión
+    await obs.send('StartStreaming');
+
+    // Ajustar el volumen del canal de voz a 0
+    await obs.send('SetVolume', {
+      source: 'voz',  // Asegúrate de que 'voz' sea el nombre exacto del canal de audio en OBS
+      volume: 0
+    });
+
+  } catch (error) {
+    console.error('Error en la secuencia startPuerta:', error);
+  }
+}
+async function stopPuertaSequence() {
+  try {
+      // Cambiar el título del stream
+      await updateStreamTitle("La crypta");
+
+      // Detener la transmisión
+      await obs.send('StopStreaming');
+
+      // Ajustar el volumen del canal de música a 100%
+      await obs.send('SetVolume', {
+          source: 'musica',  // Asegúrate de que 'musica' sea el nombre exacto del canal de audio en OBS
+          volume: 1.0
+      });
+
+  } catch (error) {
+      console.error('Error en la secuencia stopPuerta:', error);
+  }
+}
 
 
 
@@ -112,19 +153,19 @@ client.on('interactionCreate', async interaction => {
     }
   }
   // Verifica si el usuario tiene el rol necesario
-//  const requiredRoleName = 'Streamer';  // Nombre del rol necesario
+  //  const requiredRoleName = 'Streamer';  // Nombre del rol necesario
   //if (!interaction.member.roles.cache.some(role => role.name === requiredRoleName)) {
-//    await interaction.reply('No tienes los permisos necesarios para usar este comando.');
-//    return;
-//  }
+  //    await interaction.reply('No tienes los permisos necesarios para usar este comando.');
+  //    return;
+  //  }
 
   // Comando para iniciar la transmisión en OBS
   if (commandName === 'startstream') {
-    if (!interaction.member.roles.cache.has('1155926814976376953')) {
+    if (!interaction.member.roles.cache.has(process.env.rol)) {
       await interaction.reply('No tienes los permisos necesarios para usar este comando.');
       return;
     }
-    
+
     try {
       await obs.send('StartStreaming');
       await interaction.reply('Transmisión iniciada');
@@ -135,11 +176,11 @@ client.on('interactionCreate', async interaction => {
   }
   // Comando para detener la transmisión en OBS
   if (commandName === 'stopstream') {
-    if (!interaction.member.roles.cache.has('1155926814976376953')) {
+    if (!interaction.member.roles.cache.has(process.env.rol)) {
       await interaction.reply('No tienes los permisos necesarios para usar este comando.');
       return;
     }
-    
+
     try {
       await obs.send('StopStreaming');
       await interaction.reply('Transmisión detenida');
@@ -150,11 +191,11 @@ client.on('interactionCreate', async interaction => {
   }
   // Comando para cambiar la escena en OBS
   if (commandName === 'changescene') {
-    if (!interaction.member.roles.cache.has('1155926814976376953')) {
+    if (!interaction.member.roles.cache.has(process.env.rol)) {
       await interaction.reply('No tienes los permisos necesarios para usar este comando.');
       return;
     }
-    
+
     const sceneName = interaction.options.getString('scene');
     try {
       await obs.send('SetCurrentScene', { 'scene-name': sceneName });
@@ -166,11 +207,11 @@ client.on('interactionCreate', async interaction => {
   }
   // Comando para ajustar el volumen de "w2g nav"
   if (interaction.commandName === 'setvolume') {
-    if (!interaction.member.roles.cache.has('1155926814976376953')) {
+    if (!interaction.member.roles.cache.has(process.env.rol)) {
       await interaction.reply('No tienes los permisos necesarios para usar este comando.');
       return;
     }
-    
+
     const volume = interaction.options.getInteger('volume');
     console.log(`Volume received from Discord: ${volume}`);  // Log the received volume
 
@@ -197,11 +238,11 @@ client.on('interactionCreate', async interaction => {
   }
 
   if (interaction.commandName === 'showdiscord') {
-    if (!interaction.member.roles.cache.has('1155926814976376953')) {
+    if (!interaction.member.roles.cache.has(process.env.rol)) {
       await interaction.reply('No tienes los permisos necesarios para usar este comando.');
       return;
     }
-    
+
     try {
       await obs.send('SetSceneItemProperties', {
         item: 'discord',  // Nombre de la fuente
@@ -215,11 +256,11 @@ client.on('interactionCreate', async interaction => {
   }
 
   if (interaction.commandName === 'hidediscord') {
-    if (!interaction.member.roles.cache.has('1155926814976376953')) {
+    if (!interaction.member.roles.cache.has(process.env.rol)) {
       await interaction.reply('No tienes los permisos necesarios para usar este comando.');
       return;
     }
-    
+
     try {
       await obs.send('SetSceneItemProperties', {
         item: 'discord',  // Nombre de la fuente
@@ -234,11 +275,11 @@ client.on('interactionCreate', async interaction => {
 
   // Comando para ajustar el volumen del canal de voz
   if (commandName === 'setvoicevolume') {
-    if (!interaction.member.roles.cache.has('1155926814976376953')) {
+    if (!interaction.member.roles.cache.has(process.env.rol)) {
       await interaction.reply('No tienes los permisos necesarios para usar este comando.');
       return;
     }
-    
+
     const volumePercentage = interaction.options.getNumber('volume') / 100;  // Convierte el porcentaje a un valor entre 0 y 1
     try {
       await obs.send('SetVolume', {
@@ -254,17 +295,65 @@ client.on('interactionCreate', async interaction => {
 
   // Establecer titulo del stream de twitch
   if (interaction.commandName === 'settitle') {
-    if (!interaction.member.roles.cache.has('1155926814976376953')) {
+    if (!interaction.member.roles.cache.has(process.env.rol)) {
       await interaction.reply('No tienes los permisos necesarios para usar este comando.');
       return;
     }
-    
+
     const newTitle = interaction.options.getString('title');
     await updateStreamTitle(newTitle);
     await interaction.reply(`Título del stream cambiado a: ${newTitle}`);
   }
+  if (commandName === 'refreshbrowser') {
+    if (!interaction.member.roles.cache.has(process.env.rol)) {
+      await interaction.reply('No tienes los permisos necesarios para usar este comando.');
+      return;
+    }
+
+    try {
+      await obs.send('RefreshBrowserSource', {
+        sourceName: 'musica',  // Reemplaza con el nombre de tu fuente de navegador en OBS
+      });
+      await interaction.reply('Página del navegador actualizada.');
+    } catch (error) {
+      console.error('Error al actualizar la página del navegador:', error);
+      await interaction.reply('Error al actualizar la página del navegador.');
+    }
+  }
+  if (commandName === 'startpuerta') {
+    if (!interaction.member.roles.cache.has(process.env.rol)) {
+      await interaction.reply('No tienes los permisos necesarios para usar este comando.');
+      return;
+    }
+
+    try {
+      await startPuertaSequence();
+      await interaction.reply('Secuencia startPuerta ejecutada exitosamente.');
+    } catch (error) {
+      console.error('Error al ejecutar la secuencia startPuerta:', error);
+      await interaction.reply('Error al ejecutar la secuencia startPuerta.');
+    }
+  }
+  if (commandName === 'stoppuerta') {
+    if (!interaction.member.roles.cache.has(process.env.rol)) {
+        await interaction.reply('No tienes los permisos necesarios para usar este comando.');
+        return;
+    }
+
+    try {
+        await stopPuertaSequence();
+        await interaction.reply('Secuencia stopPuerta ejecutada exitosamente.');
+    } catch (error) {
+        console.error('Error al ejecutar la secuencia stopPuerta:', error);
+        await interaction.reply('Error al ejecutar la secuencia stopPuerta.');
+    }
+}
+
 
 });
+
+
+
 
 
 // Conecta el bot a Discord usando el token

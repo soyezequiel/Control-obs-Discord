@@ -88,6 +88,19 @@ module.exports = async function(client,token){
             }
         ]
     }
+    ,{
+        name: 'refreshbrowser',
+        description: 'Refresca la página del navegador incorporado en OBS',
+    }
+    ,{
+        name: 'startpuerta',
+        description: 'Inicia la transmisión de "La puerta de la crypta"',
+    }
+    ,{
+        name: 'stoppuerta',
+        description: 'Deshace la secuencia de comandos ejecutada por startpuerta',
+    }
+    
     ];
 
     // Crea una nueva instancia REST para hacer peticiones a la API de Discord
