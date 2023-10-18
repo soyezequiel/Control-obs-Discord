@@ -77,6 +77,17 @@ async function startPuertaSequence() {
       source: 'voz',  // Asegúrate de que 'voz' sea el nombre exacto del canal de audio en OBS
       volume: 0
     });
+    // Ocultar la imagen llamada 'barra'
+    await obs.send('SetSceneItemProperties', {
+      item: 'barra',
+      visible: false
+    });
+
+    // Ocultar la carpeta llamada 'banner'
+    await obs.send('SetSceneItemProperties', {
+      item: 'banner',
+      visible: false
+    });
 
   } catch (error) {
     console.error('Error en la secuencia startPuerta:', error);
@@ -84,20 +95,31 @@ async function startPuertaSequence() {
 }
 async function stopPuertaSequence() {
   try {
-      // Cambiar el título del stream
-      await updateStreamTitle("La crypta");
+    // Cambiar el título del stream
+    await updateStreamTitle("La crypta");
 
-      // Detener la transmisión
-      await obs.send('StopStreaming');
+    // Detener la transmisión
+    await obs.send('StopStreaming');
 
-      // Ajustar el volumen del canal de música a 100%
-      await obs.send('SetVolume', {
-          source: 'musica',  // Asegúrate de que 'musica' sea el nombre exacto del canal de audio en OBS
-          volume: 1.0
-      });
+    // Ajustar el volumen del canal de música a 100%
+    await obs.send('SetVolume', {
+      source: 'musica',  // Asegúrate de que 'musica' sea el nombre exacto del canal de audio en OBS
+      volume: 1.0
+    });
+    // Ocultar la imagen llamada 'barra'
+    await obs.send('SetSceneItemProperties', {
+      item: 'barra',
+      visible: true
+    });
+
+    // Ocultar la carpeta llamada 'banner'
+    await obs.send('SetSceneItemProperties', {
+      item: 'banner',
+      visible: true
+    });
 
   } catch (error) {
-      console.error('Error en la secuencia stopPuerta:', error);
+    console.error('Error en la secuencia stopPuerta:', error);
   }
 }
 
@@ -336,18 +358,18 @@ client.on('interactionCreate', async interaction => {
   }
   if (commandName === 'stoppuerta') {
     if (!interaction.member.roles.cache.has(process.env.rol)) {
-        await interaction.reply('No tienes los permisos necesarios para usar este comando.');
-        return;
+      await interaction.reply('No tienes los permisos necesarios para usar este comando.');
+      return;
     }
 
     try {
-        await stopPuertaSequence();
-        await interaction.reply('Secuencia stopPuerta ejecutada exitosamente.');
+      await stopPuertaSequence();
+      await interaction.reply('Secuencia stopPuerta ejecutada exitosamente.');
     } catch (error) {
-        console.error('Error al ejecutar la secuencia stopPuerta:', error);
-        await interaction.reply('Error al ejecutar la secuencia stopPuerta.');
+      console.error('Error al ejecutar la secuencia stopPuerta:', error);
+      await interaction.reply('Error al ejecutar la secuencia stopPuerta.');
     }
-}
+  }
 
 
 });
