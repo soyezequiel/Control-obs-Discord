@@ -71,6 +71,3 @@ Estructura del Proyecto
 
 └── package.json
 
-Contribuir
-
-Si deseas contribuir al proyecto, por favor crea un "fork" del repositorio y envía un "pull request".
