@@ -38,17 +38,30 @@ lua
 Copy code
 .
 ├── src/
+
 │   ├── modules/
+
 │   │   ├── discordBot.js
+
 │   │   ├── obsManager.js
+
 │   │   ├── twitchManager.js
+
 │   │   └── youtubeManager.js
+
 │   └── utils/
+
 │       ├── errorHandler.js
+
 │       └── constants.js
+
 ├── index.js
+
 ├── config.js
+
 ├── .env
+
 └── package.json
+
 Contribuir
 Si deseas contribuir al proyecto, por favor crea un "fork" del repositorio y envía un "pull request".
