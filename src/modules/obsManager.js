@@ -199,7 +199,7 @@ class ObsManager {
     }
     async startPuerta() {
         try {
-            await this.startPuertaSequence();
+            await this.#startPuertaSequence();
             return 'Secuencia startPuerta ejecutada exitosamente.';
         } catch (error) {
             throw new Error('Error al ejecutar la secuencia startPuerta:', error);
@@ -207,7 +207,7 @@ class ObsManager {
     }
     async stopPuerta() {
         try {
-            await this.stopPuertaSequence();
+            await this.#stopPuertaSequence();
             return 'Secuencia stopPuerta ejecutada exitosamente.';
         } catch (error) {
             throw new Error('Error al ejecutar la secuencia stopPuerta:', error);
