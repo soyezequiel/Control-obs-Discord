@@ -96,6 +96,25 @@ const commands = [
         name: 'stoppuerta',
         description: 'Deshace la secuencia de comandos ejecutada por startpuerta',
     }
+    // Añadir este objeto en el array de comandos en commands.js
+    , {
+        name: 'mostrarnombre',
+        description: 'Muestra el grupo invitado y realiza cambios en elementos',
+        options: [
+            {
+                name: 'nombre',
+                type: 3,  // STRING
+                description: 'Nuevo nombre para el elemento "nombre"',
+                required: true
+            },
+            {
+                name: 'foto',
+                type: 3,  // STRING
+                description: 'Nuevo enlace para el elemento "foto"',
+                required: true
+            }
+        ]
+    }
 
 ];
 module.exports = commands;

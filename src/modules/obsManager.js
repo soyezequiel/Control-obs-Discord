@@ -213,29 +213,53 @@ class ObsManager {
             throw new Error('Error al ejecutar la secuencia stopPuerta:', error);
         }
     }
-    async addsong(url,title) {
+    async addsong(url, title) {
         try {
             const response = await fetch("https://api.w2g.tv/rooms/8px5xf4ugi12muzkxe/playlists/current/playlist_items/sync_update", {
-                        method: 'POST',
-                        headers: {
-                            'Accept': 'application/json',
-                            'Content-Type': 'application/json'
-                        },
-                        body: JSON.stringify({
-                            "w2g_api_key": process.env.w2g,
-                            "add_items": [{ "url": url, "title": title }]
-                        })
-                    });
+                method: 'POST',
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    "w2g_api_key": process.env.w2g,
+                    "add_items": [{ "url": url, "title": title }]
+                })
+            });
             return `Canción agregada: ${title}`;
         } catch (error) {
             throw new Error('Error al agregar la canción:', error);
         }
     }
+    async mostrarNombre(nombre, foto) {
+        try {
+            // Si los elementos están dentro de un grupo llamado 'invitado',
+            // la referencia podría verse algo así (esto es solo un ejemplo y podría no funcionar en todas las configuraciones)
+           // const nombreElement = 'invitado/nombre';
+           // const fotoElement = 'invitado/foto';
+            const nombreElement = 'nombre';
+            const fotoElement = 'foto';
+
+            // Cambia el contenido del elemento 'nombre'
+            await this.obs.send('SetTextGDIPlusProperties', {
+                source: nombreElement,  // actualizado para reflejar la ruta completa
+                text: nombre
+            });
+
+            // Cambia la URL del navegador 'foto'
+            await this.obs.send('SetBrowserSourceProperties', {
+                source: fotoElement,  // actualizado para reflejar la ruta completa
+                url: foto
+            });
+
+            return 'Nombre y foto actualizados exitosamente.';
+        } catch (error) {
+            throw new Error('Error al actualizar nombre y foto:', error);
+        }
+    }
+
+
     // ... (otros métodos para interactuar con OBS)
 }
 
 module.exports = ObsManager;
-
-
-
-

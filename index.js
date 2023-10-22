@@ -7,23 +7,3 @@ const discordBot = new DiscordBot(process.env.DISCORD_TOKEN,commands);
 discordBot.initialize();
 console.log('Bot inicializado');
 discordBot.handleInteractionCreate();
-
-
-// ... (cualquier otra lógica que necesites en tu archivo principal)
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

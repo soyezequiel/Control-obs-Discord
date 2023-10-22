@@ -7,7 +7,7 @@ const ObsManager = require('./obsManager');
 
 
 class DiscordBot {
-    constructor(token,commands) {
+    constructor(token, commands) {
         console.log('Constructor de Discord Bot ejecutado');
         this.client = new Client({
             intents: [
@@ -25,10 +25,10 @@ class DiscordBot {
         });
         this.client.on('ready', () => {
             console.log('Discord Bot is ready!');
-            this.registerCommands(commands); 
+            this.registerCommands(commands);
         });
-        
-      
+
+
     }
     async #getVideoTitle(videoUrl) {
         const videoId = videoUrl.split('v=')[1];
@@ -102,7 +102,7 @@ class DiscordBot {
             // Comando para detener la transmisión en OBS
             if (commandName === 'stopstream') {
                 if (!interaction.member.roles.cache.has(process.env.rol)) {
-                    await interaction.reply('No tienes los permisos necesarios para usar este comando.');                    
+                    await interaction.reply('No tienes los permisos necesarios para usar este comando.');
                     return;
                 }
                 try {
@@ -117,7 +117,7 @@ class DiscordBot {
             // Comando para cambiar la escena en OBS
             if (commandName === 'changescene') {
                 if (!interaction.member.roles.cache.has(process.env.rol)) {
-                    await interaction.reply('No tienes los permisos necesarios para usar este comando.');                    
+                    await interaction.reply('No tienes los permisos necesarios para usar este comando.');
                     return;
                 }
 
@@ -194,7 +194,7 @@ class DiscordBot {
                 const volumePercentage = interaction.options.getNumber('volume') / 100;  // Convierte el porcentaje a un valor entre 0 y 1
                 try {
                     await this.obsManager.setVoiceVolume(volumePercentage);
-                    await interaction.reply(`Volumen de voz ajustado a: ${volumePercentage*100}`);                    
+                    await interaction.reply(`Volumen de voz ajustado a: ${volumePercentage * 100}`);
                 } catch (error) {
                     await interaction.reply('Error al ajustar el volumen del canal de voz.');
 
@@ -225,7 +225,7 @@ class DiscordBot {
                 try {
                     await this.obsManager.refreshBrowser();
                     await interaction.reply(`Navegador actualizado`);
-                    
+
                 } catch (error) {
                     await interaction.reply('Error al actualizar la página del navegador.');
                 }
@@ -253,12 +253,26 @@ class DiscordBot {
                 try {
                     await this.obsManager.stopPuerta();
                     await interaction.reply(`Ejecutada la secuencia Stop Puerta`);
-                    
+
                 } catch (error) {
                     await interaction.reply('Error al ejecutar la secuencia stopPuerta.');
                 }
 
             }
+            if (commandName === 'mostrarnombre') {
+                const nombre = interaction.options.getString('nombre');
+                const foto = interaction.options.getString('foto');
+                
+                try {
+                    await this.obsManager.mostrarNombre(nombre, foto);
+                    await interaction.reply(`Grupo invitado actualizado: Nombre = ${nombre}, Foto = ${foto}`);
+                } catch (error) {
+                    await interaction.reply('Error al actualizar el grupo invitado.');
+                }
+            }
+            
+
+
         });
     }
     // ... (otros métodos para manejar comandos, eventos, etc.)
@@ -285,13 +299,13 @@ class DiscordBot {
         console.log('Estado del cliente de Discord:', this.client.isReady());
         if (this.client.isReady()) {
             console.log('Llamada a registerCommands');
-            
+
             console.log('Fin de registerCommands');
         } else {
             console.log('El cliente de Discord no está listo');
         }
 
-        
+
     }
 
 
