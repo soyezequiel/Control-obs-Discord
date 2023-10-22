@@ -281,7 +281,7 @@ class DiscordBot {
             if (commandName === 'ocultarnombre') {              
                 try {
                     await this.obsManager.ocultarNombre();
-                    await interaction.reply(`Se esta mostrando el nombre del invitado`);
+                    await interaction.reply(`Se esta ocultando el nombre del invitado`);
                 } catch (error) {
                     await interaction.reply('Error al mostrar el invitado.');
                 }
