@@ -98,7 +98,7 @@ const commands = [
     }
     // Añadir este objeto en el array de comandos en commands.js
     , {
-        name: 'mostrarnombre',
+        name: 'asignarnombre',
         description: 'Muestra el grupo invitado y realiza cambios en elementos',
         options: [
             {
@@ -114,6 +114,14 @@ const commands = [
                 required: true
             }
         ]
+    }
+    , {
+        name: 'mostrarnombre',
+        description: 'Muestra el nombre del invitado',
+    }
+    , {
+        name: 'ocultarnombre',
+        description: 'Oculta el nombre del invitado',
     }
 
 ];

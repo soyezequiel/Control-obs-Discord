@@ -259,15 +259,31 @@ class DiscordBot {
                 }
 
             }
-            if (commandName === 'mostrarnombre') {
+            if (commandName === 'asignarnombre') {
                 const nombre = interaction.options.getString('nombre');
                 const foto = interaction.options.getString('foto');
                 
                 try {
-                    await this.obsManager.mostrarNombre(nombre, foto);
+                    await this.obsManager.asignarNombre(nombre, foto);
                     await interaction.reply(`Grupo invitado actualizado: Nombre = ${nombre}, Foto = ${foto}`);
                 } catch (error) {
                     await interaction.reply('Error al actualizar el grupo invitado.');
+                }
+            }
+            if (commandName === 'mostrarnombre') {              
+                try {
+                    await this.obsManager.mostrarNombre();
+                    await interaction.reply(`Se esta mostrando el nombre del invitado`);
+                } catch (error) {
+                    await interaction.reply('Error al mostrar el invitado.');
+                }
+            }
+            if (commandName === 'ocultarnombre') {              
+                try {
+                    await this.obsManager.ocultarNombre();
+                    await interaction.reply(`Se esta mostrando el nombre del invitado`);
+                } catch (error) {
+                    await interaction.reply('Error al mostrar el invitado.');
                 }
             }
             

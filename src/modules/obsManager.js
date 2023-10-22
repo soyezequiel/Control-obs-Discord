@@ -231,14 +231,38 @@ class ObsManager {
             throw new Error('Error al agregar la canción:', error);
         }
     }
-    async mostrarNombre(nombre, foto) {
+    async mostrarNombre() {
+        try {
+            // Ocultar invitado
+            await this.obs.send('SetSceneItemProperties', {
+                item: 'Invitado',
+                visible: true
+            });
+        } catch (error) {
+            throw new Error('Error al actualizar nombre y foto:', error);
+        }
+    }
+    async ocultarNombre() {
+        try {
+            // Ocultar invitado
+            await this.obs.send('SetSceneItemProperties', {
+                item: 'Invitado',
+                visible: false
+            });
+        } catch (error) {
+            throw new Error('Error al actualizar nombre y foto:', error);
+        }
+    }
+    async asignarNombre(nombre, foto) {
         try {
             // Si los elementos están dentro de un grupo llamado 'invitado',
             // la referencia podría verse algo así (esto es solo un ejemplo y podría no funcionar en todas las configuraciones)
-           // const nombreElement = 'invitado/nombre';
-           // const fotoElement = 'invitado/foto';
+            // const nombreElement = 'invitado/nombre';
+            // const fotoElement = 'invitado/foto';
             const nombreElement = 'nombre';
             const fotoElement = 'foto';
+
+
 
             // Cambia el contenido del elemento 'nombre'
             await this.obs.send('SetTextGDIPlusProperties', {
