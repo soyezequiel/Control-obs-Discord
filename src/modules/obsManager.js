@@ -281,7 +281,36 @@ class ObsManager {
             throw new Error('Error al actualizar nombre y foto:', error);
         }
     }
-
+    async mostrarEntrada() {
+        try {
+            // Ocultar invitado
+            await this.obs.send('SetSceneItemProperties', {
+                item: 'entrada',
+                visible: true
+            });
+            await this.obs.send('SetSceneItemProperties', {
+                item: 'musica',
+                visible: false
+            });
+        } catch (error) {
+            throw new Error('Error al cambiar los atributos de esos elementos:', error);
+        }
+    }
+    async ocultarEntrada() {
+        try {
+            // Ocultar invitado
+            await this.obs.send('SetSceneItemProperties', {
+                item: 'entrada',
+                visible: false
+            });
+            await this.obs.send('SetSceneItemProperties', {
+                item: 'musica',
+                visible: true
+            });
+        } catch (error) {
+            throw new Error('Error al cambiar los atributos de esos elementos:', error);
+        }
+    }
 
     // ... (otros métodos para interactuar con OBS)
 }

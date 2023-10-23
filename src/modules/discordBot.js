@@ -260,9 +260,13 @@ class DiscordBot {
 
             }
             if (commandName === 'asignarnombre') {
+                if (!interaction.member.roles.cache.has(process.env.rol)) {
+                    await interaction.reply('No tienes los permisos necesarios para usar este comando.');
+                    return;
+                }
                 const nombre = interaction.options.getString('nombre');
                 const foto = interaction.options.getString('foto');
-                
+
                 try {
                     await this.obsManager.asignarNombre(nombre, foto);
                     await interaction.reply(`Grupo invitado actualizado: Nombre = ${nombre}, Foto = ${foto}`);
@@ -270,7 +274,11 @@ class DiscordBot {
                     await interaction.reply('Error al actualizar el grupo invitado.');
                 }
             }
-            if (commandName === 'mostrarnombre') {              
+            if (commandName === 'mostrarnombre') {
+                if (!interaction.member.roles.cache.has(process.env.rol)) {
+                    await interaction.reply('No tienes los permisos necesarios para usar este comando.');
+                    return;
+                }
                 try {
                     await this.obsManager.mostrarNombre();
                     await interaction.reply(`Se esta mostrando el nombre del invitado`);
@@ -278,7 +286,11 @@ class DiscordBot {
                     await interaction.reply('Error al mostrar el invitado.');
                 }
             }
-            if (commandName === 'ocultarnombre') {              
+            if (commandName === 'ocultarnombre') {
+                if (!interaction.member.roles.cache.has(process.env.rol)) {
+                    await interaction.reply('No tienes los permisos necesarios para usar este comando.');
+                    return;
+                }
                 try {
                     await this.obsManager.ocultarNombre();
                     await interaction.reply(`Se esta ocultando el nombre del invitado`);
@@ -286,7 +298,31 @@ class DiscordBot {
                     await interaction.reply('Error al mostrar el invitado.');
                 }
             }
-            
+            if (commandName === 'mostrarentrada') {
+                if (!interaction.member.roles.cache.has(process.env.rol)) {
+                    await interaction.reply('No tienes los permisos necesarios para usar este comando.');
+                    return;
+                }
+                try {
+                    await this.obsManager.mostrarEntrada();
+                    await interaction.reply({ content: `Ahora podes trasmitir en https://vdo.ninja/?room=brightthankT&broadcast&hash=3148 y se vera en la trasmision, recuerda que la clave es lacrypta`, ephemeral: true });
+                } catch (error) {
+                    await interaction.reply('Error al mostrar la entrada.');
+                }
+            }
+            if (commandName === 'ocultarentrada') {
+                if (!interaction.member.roles.cache.has(process.env.rol)) {
+                    await interaction.reply('No tienes los permisos necesarios para usar este comando.');
+                    return;
+                }
+                try {
+                    await this.obsManager.ocultarEntrada();
+                    await interaction.reply(`se oculto la entrada de video y se reactivaron los videoclips de w2g`);
+                } catch (error) {
+                    await interaction.reply({ content: 'Error al ocultar la entrada.', ephemeral: true });
+
+                }
+            }
 
 
         });

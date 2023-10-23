@@ -123,6 +123,14 @@ const commands = [
         name: 'ocultarnombre',
         description: 'Oculta el nombre del invitado',
     }
+    , {
+        name: 'mostrarentrada',
+        description: 'muestra la trasmision de vdo.ninja y devuelve el link para trasmitirlo',
+    }
+    , {
+        name: 'ocultarentrada',
+        description: 'oculta la trasmision de vdo.ninja y reactiva la trasmision de la video musica',
+    }
 
 ];
 module.exports = commands;
