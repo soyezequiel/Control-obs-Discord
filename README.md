@@ -34,7 +34,12 @@ Uso
 Para iniciar el programa, ejecuta:
 
 
+Permisos
+Ver Canales (VIEW_CHANNEL)
 
+Conectar (CONNECT)
+
+Hablar (SPEAK):
 
 
 node index.js

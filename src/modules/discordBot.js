@@ -328,10 +328,21 @@ class DiscordBot {
 
                 }
             }
-
-
         });
     }
+    async estadoDeVozActualizado() {
+        this.client.on('voiceStateUpdate', (oldState, newState) => {
+            // Comprueba si el canal de voz actualizado es el que te interesa
+            if (newState.channelId === '657468801847132181') {
+              // Comprueba si el usuario está hablando
+              if (newState.selfMute === false && newState.selfDeaf === false) {
+                console.log(`El usuario ${newState.member.user.username} está hablando en el canal.`);
+              }
+            }
+          });
+          
+    }
+    
     // ... (otros métodos para manejar comandos, eventos, etc.)
 
     async registerCommands(commands) {
