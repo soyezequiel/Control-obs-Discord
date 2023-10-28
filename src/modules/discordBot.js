@@ -27,6 +27,11 @@ class DiscordBot {
             console.log('Discord Bot is ready!');
             this.registerCommands(commands);
         });
+        this.client.on('disconnect', () => {
+            console.log('Desconectado, intentando reconectar...');
+            this.client.login(this.token);
+          });
+          
 
 
     }

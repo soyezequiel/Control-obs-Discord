@@ -4,6 +4,7 @@ class ObsManager {
     constructor() {
         console.log('Constructor ObsManager ejecutado');
         this.obs = new OBSWebSocket();
+
     }
 
     async connect() {
