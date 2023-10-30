@@ -335,6 +335,12 @@ class ObsManager {
             const newPosY = currentProperties.position.y - (currentProperties.height * (newScaleY - currentProperties.scale.y) / 2);
 
             // 4. Aplicar las nuevas propiedades
+            // Para habilitar el filtro de blanco y negro
+            await this.obs.send('SetSourceFilterVisibility', {
+                'sourceName': nombre,
+                'filterName': 'Corrección de color', // Nombre del filtro que añadiste en OBS
+                'filterEnabled': false
+            });
             await this.obs.send('SetSceneItemProperties', {
                 'item': nombre,
                 'scale': { 'x': newScaleX, 'y': newScaleY },
@@ -349,9 +355,14 @@ class ObsManager {
     }
     async ocultar(nombre) {
         try {
-            if (this.propiedades.invitado === null ){
+            if (this.propiedades.invitado === null) {
                 this.propiedades.invitado = await this.obs.send('GetSceneItemProperties', { 'item': nombre });
             }
+            await this.obs.send('SetSourceFilterVisibility', {
+                'sourceName': nombre,
+                'filterName': 'Corrección de color', // Nombre del filtro que añadiste en OBS
+                'filterEnabled': true
+            });
             //  console.log('Propiedades originales:', this.propiedades.invitado);
             await this.obs.send('SetSceneItemProperties', {
                 'item': nombre,
