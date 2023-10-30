@@ -131,6 +131,5 @@ const commands = [
         name: 'ocultarentrada',
         description: 'oculta la trasmision de vdo.ninja y reactiva la trasmision de la video musica',
     }
-
 ];
 module.exports = commands;

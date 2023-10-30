@@ -25,6 +25,8 @@ Instala las dependencias:
 
 
 npm install axios discord.js dotenv obs-websocket-js
+npm i @discordjs/voice
+
 
 Configura las variables de entorno en el archivo .env.
 

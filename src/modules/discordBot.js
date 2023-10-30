@@ -1,6 +1,8 @@
 //const { Client, GatewayIntentBits } = require('discord.js');
 //const { REST, Routes } = require('discord.js');
 const { Client, GatewayIntentBits, REST, Routes } = require('discord.js');
+const { joinVoiceChannel, createAudioPlayer, AudioPlayerStatus, createAudioResource, entersState, VoiceConnectionStatus } = require('@discordjs/voice');
+
 const axios = require('axios');
 const ObsManager = require('./obsManager');
 
@@ -30,8 +32,8 @@ class DiscordBot {
         this.client.on('disconnect', () => {
             console.log('Desconectado, intentando reconectar...');
             this.client.login(this.token);
-          });
-          
+        });
+
 
 
     }
@@ -328,21 +330,34 @@ class DiscordBot {
 
                 }
             }
+
         });
     }
+
+
+
+
     async estadoDeVozActualizado() {
         this.client.on('voiceStateUpdate', (oldState, newState) => {
             // Comprueba si el canal de voz actualizado es el que te interesa
-            if (newState.channelId === '657468801847132181') {
-              // Comprueba si el usuario está hablando
-              if (newState.selfMute === false && newState.selfDeaf === false) {
-                console.log(`El usuario ${newState.member.user.username} está hablando en el canal.`);
-              }
+            try {
+                if (newState.channelId === process.env.canalEstudio) {
+                    // Comprueba si el usuario está hablando
+                    if (newState.selfMute === false && newState.selfDeaf === false) {
+                        console.log(`El usuario ${newState.member.user.id} está hablando en el canal.`);
+                        this.obsManager.mostrar(newState.member.user.id);
+                    } else {
+                        console.log(`El usuario ${newState.member.user.id} dejó de hablar en el canal.`);
+                        this.obsManager.ocultar(newState.member.user.id);
+                    }
+                }
+            } catch (error) {
+                throw new Error('Error al cambiar los atributos de esos elementos:', error);
             }
-          });
-          
+        });
+
     }
-    
+
     // ... (otros métodos para manejar comandos, eventos, etc.)
 
     async registerCommands(commands) {
@@ -375,7 +390,6 @@ class DiscordBot {
 
 
     }
-
 
 }
 
