@@ -323,8 +323,34 @@ class ObsManager {
             // 1. Obtener propiedades actuales
             const currentProperties = await this.obs.send('GetSceneItemProperties', { 'item': nombre });
 
-            this.propiedades.invitado = currentProperties;
-
+            
+            switch (nombre) {
+                case '389644235013619714':
+                  // Código para Usuario1
+                  console.log('Ejecutando acciones para Usuario1');
+                  this.propiedades.invitado = currentProperties;
+                  break;
+              
+                case '361178405401526272':
+                  // Código para Usuario2
+                  console.log('Ejecutando acciones para Usuario2');
+                  this.propiedades.persona1 = currentProperties;
+                  break;
+              
+                case '1033802836712116405':
+                  // Código para Usuario3
+                  console.log('Ejecutando acciones para Usuario3');
+                  this.propiedades.persona2 = currentProperties;
+                  break;
+              
+                // ... más casos para más usuarios
+              
+                default:
+                  // Código para cuando no se cumpla ninguno de los casos anteriores
+                  console.log('Usuario no reconocido');
+                  break;
+              }
+              
 
             // 2. Calcular nuevas dimensiones (por ejemplo, aumentar en un 50%)
             const newScaleX = currentProperties.scale.x * 1.1;
@@ -356,20 +382,74 @@ class ObsManager {
     async ocultar(nombre) {
         try {
             if (this.propiedades.invitado === null) {
-                this.propiedades.invitado = await this.obs.send('GetSceneItemProperties', { 'item': nombre });
+                
+                switch (nombre) {
+                    case '389644235013619714':
+                      // Código para Usuario1
+                      console.log('Ejecutando acciones para Usuario1');
+                      this.propiedades.invitado = await this.obs.send('GetSceneItemProperties', { 'item': nombre });
+                      break;
+                  
+                    case '361178405401526272':
+                      // Código para Usuario2
+                      console.log('Ejecutando acciones para Usuario2');
+                      this.propiedades.persona1 =  await this.obs.send('GetSceneItemProperties', { 'item': nombre });
+                      break;
+                  
+                    case '1033802836712116405':
+                      // Código para Usuario3
+                      console.log('Ejecutando acciones para Usuario3');
+                      this.propiedades.persona2 =  await this.obs.send('GetSceneItemProperties', { 'item': nombre });
+                      break;
+                  
+                    // ... más casos para más usuarios
+                  
+                    default:
+                      // Código para cuando no se cumpla ninguno de los casos anteriores
+                      console.log('Usuario no reconocido');
+                      break;
+                  }
             }
             await this.obs.send('SetSourceFilterVisibility', {
                 'sourceName': nombre,
                 'filterName': 'Corrección de color', // Nombre del filtro que añadiste en OBS
                 'filterEnabled': true
             });
+            const prop = null;
+            switch (nombre) {
+                case '389644235013619714':
+                  // Código para Usuario1
+                  console.log('Ejecutando acciones para Usuario1');
+                  prop=this.propiedades.invitado;
+                  break;
+              
+                case '361178405401526272':
+                  // Código para Usuario2
+                  console.log('Ejecutando acciones para Usuario2');
+                  prop=this.propiedades.persona1;
+                  break;
+              
+                case '1033802836712116405':
+                  // Código para Usuario3
+                  console.log('Ejecutando acciones para Usuario3');
+                  prop=this.propiedades.persona2;
+                  break;
+              
+                // ... más casos para más usuarios
+              
+                default:
+                  // Código para cuando no se cumpla ninguno de los casos anteriores
+                  console.log('Usuario no reconocido');
+                  break;
+              }
+
             //  console.log('Propiedades originales:', this.propiedades.invitado);
             await this.obs.send('SetSceneItemProperties', {
                 'item': nombre,
                 //        'scale': { filter: 'OBS_SCALE_DISABLE', x: 1.0078125, y: 1.0057142972946167 },
                 //       'position': { x: 34, y: 495, alignment: 5 }
-                'scale': this.propiedades.invitado.scale,
-                'position': this.propiedades.invitado.position
+                'scale': prop.scale,
+                'position': prop.position
             });
             console.log('Propiedades restauradas.');
 
