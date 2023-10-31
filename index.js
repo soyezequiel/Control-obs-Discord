@@ -7,4 +7,4 @@ const discordBot = new DiscordBot(process.env.DISCORD_TOKEN,commands);
 discordBot.initialize();
 console.log('Bot inicializado');
 discordBot.handleInteractionCreate();
-discordBot.estadoDeVozActualizado();
+//discordBot.estadoDeVozActualizado();
