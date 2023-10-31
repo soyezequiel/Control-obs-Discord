@@ -382,23 +382,23 @@ class ObsManager {
     async ocultar(nombre) {
         try {
             if (this.propiedades.invitado === null) {
-                
+                console.log('caso null');
                 switch (nombre) {
                     case '389644235013619714':
                       // Código para Usuario1
-                      console.log('Ejecutando acciones para Usuario1');
+                      console.log('Ejecutando acciones para invitado');
                       this.propiedades.invitado = await this.obs.send('GetSceneItemProperties', { 'item': nombre });
                       break;
                   
                     case '361178405401526272':
                       // Código para Usuario2
-                      console.log('Ejecutando acciones para Usuario2');
+                      console.log('Ejecutando acciones para Usuario1');
                       this.propiedades.persona1 =  await this.obs.send('GetSceneItemProperties', { 'item': nombre });
                       break;
                   
                     case '1033802836712116405':
                       // Código para Usuario3
-                      console.log('Ejecutando acciones para Usuario3');
+                      console.log('Ejecutando acciones para Usuario2');
                       this.propiedades.persona2 =  await this.obs.send('GetSceneItemProperties', { 'item': nombre });
                       break;
                   
@@ -415,24 +415,24 @@ class ObsManager {
                 'filterName': 'Corrección de color', // Nombre del filtro que añadiste en OBS
                 'filterEnabled': true
             });
-            const prop = null;
+            var prop = null;
             switch (nombre) {
                 case '389644235013619714':
                   // Código para Usuario1
-                  console.log('Ejecutando acciones para Usuario1');
-                  prop=this.propiedades.invitado;
+                  console.log('Ejecutando acciones para invitado');
+                  prop = this.propiedades.invitado;
                   break;
               
                 case '361178405401526272':
                   // Código para Usuario2
-                  console.log('Ejecutando acciones para Usuario2');
-                  prop=this.propiedades.persona1;
+                  console.log('Ejecutando acciones para Usuario1');
+                  prop = this.propiedades.persona1;
                   break;
               
                 case '1033802836712116405':
                   // Código para Usuario3
-                  console.log('Ejecutando acciones para Usuario3');
-                  prop=this.propiedades.persona2;
+                  console.log('Ejecutando acciones para Usuario2');
+                  prop = this.propiedades.persona2;
                   break;
               
                 // ... más casos para más usuarios
@@ -443,7 +443,7 @@ class ObsManager {
                   break;
               }
 
-            //  console.log('Propiedades originales:', this.propiedades.invitado);
+            //  console.log('Envio de propiedades');
             await this.obs.send('SetSceneItemProperties', {
                 'item': nombre,
                 //        'scale': { filter: 'OBS_SCALE_DISABLE', x: 1.0078125, y: 1.0057142972946167 },
@@ -455,8 +455,9 @@ class ObsManager {
 
 
         } catch (error) {
-            throw new Error('Error al cambiar los atributos de esos elementos:', error);
+            throw new Error(`Error al cambiar los atributos de esos elementos: ${error}`);
         }
+        
     }
 
 
