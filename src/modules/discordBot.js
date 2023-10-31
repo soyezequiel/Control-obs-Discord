@@ -345,10 +345,10 @@ class DiscordBot {
                     // Comprueba si el usuario está hablando
                     if (newState.selfMute === false && newState.selfDeaf === false) {
                         console.log(`El usuario ${newState.member.user.id} está hablando en el canal.`);
-                        this.obsManager.mostrar(newState.member.user.id);
+                        this.obsManager.aumentar(newState.member.user.id);
                     } else {
                         console.log(`El usuario ${newState.member.user.id} dejó de hablar en el canal.`);
-                        this.obsManager.ocultar(newState.member.user.id);
+                        this.obsManager.disminuir(newState.member.user.id);
                     }
                 }
             } catch (error) {

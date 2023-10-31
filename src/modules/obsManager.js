@@ -318,7 +318,7 @@ class ObsManager {
             throw new Error('Error al cambiar los atributos de esos elementos:', error);
         }
     }
-    async mostrar(nombre) {
+    async aumentar(nombre) {
         try {
             // 1. Obtener propiedades actuales
             const currentProperties = await this.obs.send('GetSceneItemProperties', { 'item': nombre });
@@ -379,7 +379,7 @@ class ObsManager {
             throw new Error('Error al cambiar los atributos de esos elementos:', error);
         }
     }
-    async ocultar(nombre) {
+    async disminuir(nombre) {
         try {
             if (this.propiedades.invitado === null) {
                 console.log('caso null');
