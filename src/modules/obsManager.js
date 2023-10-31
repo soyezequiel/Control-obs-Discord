@@ -22,14 +22,14 @@ class ObsManager {
         } catch (err) {
             console.error('No se pudo conectar a OBS:', err);
             // Intenta abrir OBS
-        //    exec("\"C:\\Program Files\\obs-studio\\bin\\64bit\\obs64.exe\"", { cwd: "C:\\Program Files\\obs-studio\\bin\\64bit\\" }, (error, stdout, stderr) => {
-       //         if (error) {
-        //            console.error(`Error al intentar abrir OBS: ${error}`);
-        //            return;
-        //        }
-        //        console.log(`stdout: ${stdout}`);
-        //        console.log(`stderr: ${stderr}`);
-       //     });
+            exec("\"C:\\Program Files\\obs-studio\\bin\\64bit\\obs64.exe\"", { cwd: "C:\\Program Files\\obs-studio\\bin\\64bit\\" }, (error, stdout, stderr) => {
+                if (error) {
+                    console.error(`Error al intentar abrir OBS: ${error}`);
+                    return;
+                }
+                console.log(`stdout: ${stdout}`);
+                console.log(`stderr: ${stderr}`);
+            });
             
             setTimeout(() => this.connect(), 10000);
         }
