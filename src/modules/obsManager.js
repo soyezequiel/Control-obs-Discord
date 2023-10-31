@@ -31,7 +31,7 @@ class ObsManager {
                 console.log(`stderr: ${stderr}`);
             });
             
-            setTimeout(() => this.connect(), 10000);
+            setTimeout(() => this.connect(), 30000);
         }
     }
     async #updateStreamTitle(newTitle) {
