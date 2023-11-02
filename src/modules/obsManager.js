@@ -332,48 +332,18 @@ class ObsManager {
     async aumentar(nombre) {
         try {
             const data = await this.obs.send('GetSceneItemList', { 'scene-name': 'patio' });
-          
-            console.log(data);
             if (!data || !data.sceneItems) {
                 console.log(`No se pudo obtener información de la escena patio`);
                 return false;
               }
               
             const source = data.sceneItems.find(item => item.sourceName === nombre);
-            console.log("hola ",source);
             if (!source){
                 console.log(`El elemento  no existe`);
                 return;
             }else{
                 console.log(`El elemento  si existe`);
             }
-            /* switch (nombre) {
-                case '389644235013619714':
-                    // Código para Usuario1
-                    console.log('Ejecutando acciones para Usuario1');
-                    this.propiedades.invitado = currentProperties;
-                    break;
-
-                case '361178405401526272':
-                    // Código para Usuario2
-                    console.log('Ejecutando acciones para Usuario2');
-                    this.propiedades.persona1 = currentProperties;
-                    break;
-
-                case '1033802836712116405':
-                    // Código para Usuario3
-                    console.log('Ejecutando acciones para Usuario3');
-                    this.propiedades.persona2 = currentProperties;
-                    break;
-
-                // ... más casos para más usuarios
-
-                default:
-                    // Código para cuando no se cumpla ninguno de los casos anteriores
-                    console.log('Usuario no reconocido');
-                    break;
-            } */
-
             // 4. Aplicar las nuevas propiedades
             // Para habilitar el filtro de blanco y negro
             await this.obs.send('SetSourceFilterVisibility', {
@@ -391,9 +361,9 @@ class ObsManager {
             const currentScaleY = currentProps.scale.y;
             const currentPosX = currentProps.position.x;
             const currentPosY = currentProps.position.y;
-
-            const newScaleX = 1.05;
-            const newScaleY = 1.05;
+            console.log(currentProps.scale.x);
+            const newScaleX = 0.8;
+            const newScaleY = 0.8;
             // Calcular la diferencia entre la nueva escala y la escala actual
             const dScaleX = newScaleX - currentScaleX;
             const dScaleY = newScaleY - currentScaleY;
@@ -422,15 +392,12 @@ class ObsManager {
     async disminuir(nombre) {
         try {
             const data = await this.obs.send('GetSceneItemList', { 'scene-name': 'patio' });
-          
-            console.log(data);
             if (!data || !data.sceneItems) {
                 console.log(`No se pudo obtener información de la escena patio`);
                 return false;
               }
               
             const source = data.sceneItems.find(item => item.sourceName === nombre);
-            console.log("hola ",source);
             if (!source){
                 console.log(`El elemento  no existe`);
                 return;
@@ -444,53 +411,12 @@ class ObsManager {
                 'filterEnabled': true
             });
             var prop = null;
-            /*    switch (nombre) {
-                    case '389644235013619714':
-                        // Código para Usuario1
-                        if (this.propiedades.invitado === null) {
-                            console.log('caso null');
-                            this.propiedades.invitado = await this.obs.send('GetSceneItemProperties', { 'item': nombre });
-                        }
-                        console.log('Ejecutando acciones para invitado');
-                        prop = this.propiedades.invitado;
-                        break;
-    
-                    case '361178405401526272':
-                        // Código para Usuario2
-                        console.log('Ejecutando acciones para Usuario1');
-                        if (this.propiedades.invitado === null) {
-                            console.log('caso null');
-                            this.propiedades.persona1 = await this.obs.send('GetSceneItemProperties', { 'item': nombre });
-                        }
-                        prop = this.propiedades.persona1;
-                        break;
-    
-                    case '1033802836712116405':
-                        // Código para Usuario3
-                        if (this.propiedades.invitado === null) {
-                            console.log('caso null');
-                            this.propiedades.persona2 = await this.obs.send('GetSceneItemProperties', { 'item': nombre });
-                        }
-                        console.log('Ejecutando acciones para Usuario2');
-                        prop = this.propiedades.persona2;
-                        break;
-    
-                    // ... más casos para más usuarios
-    
-                    default:
-                        // Código para cuando no se cumpla ninguno de los casos anteriores
-                        console.log('Usuario no reconocido');
-                        break;
-                }
-    */
+            
             prop = await this.obs.send('GetSceneItemProperties', { 'item': nombre });
             //  console.log('Envio de propiedades');
             await this.obs.send('SetSceneItemProperties', {
                 'item': nombre,
-                'scale': { filter: 'bilinear', x: 1, y: 1 },
-                //   'position': { x: 34, y: 495, alignment: 5 },
-                //     'scale': prop.scale,
-                //      'position': prop.position
+                'scale': { filter: 'bilinear', x: 0.70703125, y: 0.70703125 },
             });
             console.log('Propiedades restauradas.');
 
